@@ -125,7 +125,7 @@ Some characteristics of R are that:
 - No direct memory control - garbage collector.
 
 
-```{r, echo = TRUE}
+```{r, functional1, exercise = TRUE}
 x <- 2  # 2 is assigned to x
 add_3 <- function(y){
   cat( "The value of x is ", x, "\n") # It will print x from global environment
@@ -137,7 +137,7 @@ add_3(3)
 x # See that global x was not affected by the assignment inside the function.
 ```
 
-```{r, echo = TRUE}
+```{r, functional2, exercise = TRUE, exercise.setup = "functional1"}
 # It is possible to nest function into function
 add_3(add_3(3))
 ```
