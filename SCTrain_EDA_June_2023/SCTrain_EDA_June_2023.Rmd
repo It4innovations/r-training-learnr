@@ -109,7 +109,7 @@ my_skim <- skimr::skim_with(numeric = skimr::sfl(new_mad = ~mad(., na.rm = TRUE)
                                                  na_mad = ~mad(., na.rm = FALSE)),
                             append = FALSE)
 naniar::riskfactors |> 
-  dplyr::select(tidyselect::vars_select_helpers$where(is.numeric)) |> 
+  dplyr::select(where(is.numeric)) |> 
   my_skim()
 ```
 
