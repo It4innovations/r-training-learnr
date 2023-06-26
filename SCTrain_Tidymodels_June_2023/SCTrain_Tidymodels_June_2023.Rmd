@@ -12,8 +12,6 @@ runtime: shiny_prerendered
 library(learnr)
 library(skimr)
 library(dplyr)
-library(outliers)
-library(vtree)
 library(ranger)
 library(randomForest)
 library(xgboost)
