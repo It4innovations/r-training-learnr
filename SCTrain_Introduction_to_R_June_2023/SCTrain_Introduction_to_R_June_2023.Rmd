@@ -13,6 +13,7 @@ library(learnr)
 library(naniar)
 library(ggplot2)
 library(dplyr)
+library(tidyr)
 data(airquality)
 knitr::opts_chunk$set(echo = FALSE)
 tutorial_options(exercise.completion = TRUE)
@@ -61,7 +62,7 @@ In R we have several basic classes of vectors:
 - Raw - binary format, `charToRaw("Test")`
 
 To create a vector in R a function `c()` is used.
-Assigning an expresion to a variable is done using `<-` instead of `=` as is used in most of the programming languages.
+Assigning an expression to a variable is done using `<-` instead of `=` as is used in most of the programming languages.
 It pretty much concatenate multiple values into one vector.
 
 Let's take a look at some of these:
@@ -124,18 +125,6 @@ Some characteristics of R are that:
 - No direct memory control - garbage collector.
 
 
-
-```{r, echo = TRUE}
-# Comments are written with "#"
-mtcars <- as.data.frame(mtcars) # we can assign an object with "<-" not "=" as you might be used to
-mtcars # writing only the variable will do  default action for it, usually print() or equivalent
-```
-
-- tbl_mtcars is a tibble, which is special format of data.frame
-- tibbles are basic object in which are stored data in R
-- it is a special list which contains object with equal length
-- each column may have different class
-
 ```{r, echo = TRUE}
 x <- 2  # 2 is assigned to x
 add_3 <- function(y){
@@ -156,9 +145,7 @@ add_3(add_3(3))
 - R will let you write incredibly complicated nested statements.
 - That does not mean all of it is good.
 
-
-## Classical R workflow example
-
+More in-depth introduction to functional programming can be found [here](https://adv-r.hadley.nz/fp.html).
 
 ## [![tidyverse](images/tidyverse_logo.png){#id .class width="100"}](https://tidyverse.tidyverse.org/) Tidyverse
 
@@ -166,6 +153,7 @@ add_3(add_3(3))
 -   Designed to work together to make common data science operations more user friendly.
 -   Packages have the same design philosophy, grammar, and data structures.
 -   R for data science
+-   Using pipe `|>` to make a chain of commands is a standard.
 
 [![r4ds](images/r4ds_cover.png){.class width="100"}](https://r4ds.hadley.nz/)
 
@@ -174,11 +162,12 @@ add_3(add_3(3))
 -   Consistent data structure, easy to manipulate, model and visualize.
 -   Designed to minimize effort on cleaning data to get it ready for analysis.
 -   Data tidying = data conversion into tidy form.
+- We will use function `head()` to take a look at the first 10 observations of the dataset *iris* and *iris.tidy*, which are pre-loaded.
 
 Let's look at the following well known iris dataset, you can start by clicking **"Run"** in the interactive window below.
 
 ```{r iris, exercise = TRUE}
-head(datasets::iris)
+head(iris)
 ```
 
 
@@ -230,35 +219,46 @@ head(iris)
 ```
 Here, each observation describes a flower. The first four columns it's sepal length and width and petal length and width, the last column than it's species. The first four column names in this dataset contain two variables:  leaf type (with values sepal and petal) and leaf measure (with values length and width).
 
-The key to transform this dataset to it's tidy form is the function [`tidyr::pivot_longer()`](https://tidyr.tidyverse.org/reference/pivot_longer.html):
+The key to transform this dataset to it's tidy form is to use [`dplyr::mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) to assign a unique identifier to individual flowers, then the function [`tidyr::pivot_longer()`](https://tidyr.tidyverse.org/reference/pivot_longer.html).
+[`tidyr::pivot_longer()`](https://tidyr.tidyverse.org/reference/pivot_longer.html) takes *cols* argument as a definition of columns which should be grouped together.
+Columns names will be then put into a column *name* and values will be put into a column called *value*
+Now let's try to do this:
 
 ```{r pivotlonger, exercise = TRUE}
 iris.tidy <- iris |> 
   dplyr::mutate(id = 1:nrow(iris))
-```
 
-```{r pivotlonger-hint-1}
-iris.tidy <- iris |> 
-  dplyr::mutate(id = 1:nrow(iris)) |> 
-  tidyr::pivot_longer(cols = 1:4)
+head(iris.tidy)
 ```
 
 ```{r pivotlonger-solution}
+iris.tidy <- iris |> 
+  dplyr::mutate(id = 1:nrow(iris)) |> 
+  tidyr::pivot_longer(cols = 1:4)
+
+head(iris.tidy)
+```
+
+Right now we still need to split variable type and measure into two columns. 
+This information can be found in the column *name*. 
+The function [`tidyr::separate()`](https://tidyr.tidyverse.org/reference/separate.html) will be used to split the variables *type* and *measure*.
+The input variable is defined by the argument *col* and names of the new variable should be defined by the argument *into* as a character vector created by function `c()`.
+
+```{r pivotlonger2, exercise = TRUE}
+iris.tidy <- iris |> 
+  dplyr::mutate(id = 1:nrow(iris)) |> 
+  tidyr::pivot_longer(cols = 1:4) |>
+  
+head(iris.tidy)
+```
+
+```{r pivotlonger2-solution}
 iris.tidy <- iris |> 
   dplyr::mutate(id = 1:nrow(iris)) |> 
   tidyr::pivot_longer(cols = 1:4) |>
   tidyr::separate(col = "name",
                   into = c("type", "measure"))
 head(iris.tidy)
-```
-
-The function [`dplyr::mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) is used here to assign a unique identifier to individual flowers and the function [`tidyr::separate()`](https://tidyr.tidyverse.org/reference/separate.html) to split the variables type and measure.
-
-What would happen if you forgot to use `separate` function ?
-
-
-```{r pivotlonger2, exercise = TRUE}
-
 ```
 
 ### Widening data
@@ -268,19 +268,20 @@ The second commonly used function for data tidying is [`tidyr::pivot_wider()`](h
 ```{r pivotwider, exercise = TRUE}
 iris.tidy |> 
 tidyr::pivot_wider(names_from = c("measure"),
-                     values_from = "value")
+                   values_from = "value")
 
 ```
 
 ## Exercises
 
-The `tidyr::relig_income` dataset containes three variables: religion, income and frequency.
+The `tidyr::relig_income` dataset contains three variables: religion, income and frequency.
 
 ```{r religincome, exercise = TRUE}
 tidyr::relig_income
 ```
 
 To tidy it, we need to pivot longer the non-variable columns into a two-column key-value pair.
+For the *cols* argument it is necessary to use *-religion* as we want to pivot all the columns except that one.
 
 ```{r religincome2, exercise = TRUE}
 relig_income |> 
@@ -301,8 +302,11 @@ tidyr::billboard
 ```
 
 It has variables for artist, track, date.entered, rank and week. The rank in each week after it enters the top 100 is recorded in 75 columns, wk1 to wk76.
-To tidy this dataset, we first use pivot_longer() to make the dataset longer. We transform the columns from wk1 to wk76, making a new column for their names, week, and a new value for their values, rank.
-After that, it doesn't hurt to clean a little by converting the week variable to a number, and figuring out the date corresponding to each week on the charts:
+To tidy this dataset, we first use `pivot_longer()` to make the dataset longer. We transform the columns from wk1 to wk76 (it is possible to use *wk1:wk76* to select multiple columns with integer increments), making a new column for their names, week, and a new value for their values, rank.
+After that, it doesn't hurt to clean a little by converting the week variable to a number (using [`dplyr::mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) and `as.integer()` and `gsub()` functions).
+`gsub()` is a function to replace part of a string. 
+It takes three inputs: the first is a string with pattern we want to replace, the second is what we want to replace it with and the third is input data.
+In our case we want to find *"wk"*, replace it with *""* and input is column *week*.:
 
 ```{r billboard2, exercise = TRUE}
 billboard |> 
@@ -327,10 +331,95 @@ billboard |>
     values_drop_na = TRUE
   ) |> 
   mutate(
-    week = as.integer(gsub("wk", "", week)),
-    date = as.Date(date.entered) + 7 * (week - 1),
-    date.entered = NULL
+    week = as.integer(gsub("wk", "", week))
   )
 ```
 
 ## Basic visualisation with [ggplot2](https://ggplot2.tidyverse.org)
+
+In R one of the most used visualization libraries is [ggplot2](https://ggplot2.tidyverse.org).
+It is a very structured way of creating plots based on [The Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448).
+
+The minimal input for the ggplot are:
+
+1. Data
+2. Geometry function
+3. Data mappings
+
+Additionally, it is possible to change many other settings to get quite complicated data relationships into visual presentation.
+In this course we will show just some basic examples of ggplot usage, which already gives us powerful visualization tool.
+
+We will start with the *Iris* dataset.
+
+The plots are initialized by calling `ggplot()` and passing data as an argument.
+Then ggplot uses similar system as pipes, but instead of `|>` functions are chained using `+`.
+To make a simple plot we will use box plot geometry called by function `geom_boxplot()` and we need to pass the variables mapping inside so called aesthetics with function `aes()` which takes arguments depending on the geometry.
+In case of box plots we can pass *x* for variable to be mapped onto the x-axis and *y* for variable mapped to the y-axis.
+
+We start with mapping *Species* to the x-axis and *Sepal.Length* to the y-axis.
+
+```{r ggplot-iris, exercise = TRUE}
+iris |> 
+  ggplot() +
+  geom_boxplot(aes(x = Species,
+                   y = Sepal.Length))
+
+```
+
+Next we will switch from box plots to scatter plots.
+To make a scatter plot we need to use `geom_point()`.
+Let's map Petal.Width on the x-axis and *Petal.Length* on the y-axis.
+In addition, to these two we can map *Species* on to the color.
+We will just add `color = Species` to the `aes()` function.
+
+```{r ggplot-iris-scatter, exercise = TRUE}
+iris |> 
+  ggplot() +
+  geom_point(aes(x = Petal.Width,
+                 y = Petal.Length,
+                 color = Species))
+```
+
+To experiment a little bit more we can also try to map shape to the *Species* and size to the *Sepal.Length*.
+This shows how we can add more information into the plot with simple changes of shapes, colors, size, etc.
+If we want to change any of these values to the fixed value, we can do so by adding it outside `aes()` function.
+This is handy for example in case we want to make all points transparent.
+Then we can set `alpha = 0.5`.
+Note: This technique is mostly used in cases where there are a lot of points and we need to get an information about how many points are being close together at specific area.
+If the number of points is too many, it might be better to consider two dimensional distribution plots such as `geom_density_2d()` or `geom_hex()`
+
+```{r ggplot-iris-scatter2, exercise = TRUE}
+iris |> 
+  ggplot() +
+  geom_point(aes(x = Petal.Width,
+                 y = Petal.Length,
+                 color = Species,
+                 shape = Species,
+                 size = Sepal.Length),
+             alpha = 0.5)
+```
+
+Now let's try one more thing and that is visualizing box plots based on the type and measure.
+To this end we will use *iris.tidy*, since it is more suited for this kind of operation.
+Into the `geom_boxplot()` aesthetics we will put *Species* on the x-axis and *value* on the y-axis.
+Also, we will add *Species* to fill, so each box plot has their own color.
+At this stage we would get a plot which would mix values from all the possible types (Sepal, Petal) and measures (Length, Width).
+Therefore, we will separate this plot into 4 using `facet_grid()` function.
+This function takes as an input names of the columns by which we want to create new plots by rows and columns.
+In our case input will be `measure~type`.
+This tells ggplot to group values by measure into rows and by type into columns.
+Results is that we will get box plot for Petal Length into the upper left plot, Sepal Length in the upper right plot, and so on.
+We can also set argument *scales* to `"free_y"`, which will make separate y-scale ranges for each row.
+Since the legend automatically created by fill aesthetics is not needed in this case we can also add function `guides()` and set argument *fill* to `"none"` to disable legend.
+Function `guides()` is used to control labels and legend.
+
+```{r ggplot-iris-tidy, exercise = TRUE}
+iris.tidy |> 
+  ggplot() +
+  geom_boxplot(aes(x = Species,
+                   y = value,
+                   fill = Species)) + 
+  facet_grid(measure~type,
+             scales = "free_y") + 
+  guides(fill = "none")
+```
