@@ -56,13 +56,13 @@ In this case one group of models is supervised, other is unsupervised and there 
 The supervised models are for example linear regression, support vector machine, decision trees, or some types of neural networks.
 The main characteristic of these models is a part of data which is labelled with a correct output of a model and model is making use of such information during its training/fitting.
 
-In case of unsupervised models the model there are no such data and it tries to naturally find the best solution to the problem. Such models are for example k-nearest neighbours clusterin, self-organizing maps, principal component analysis or autoencoders.
+In case of unsupervised models the model there are no such data and it tries to naturally find the best solution to the problem. Such models are for example k-nearest neighbors clustering, self-organizing maps, principal component analysis or auto-encoders.
 
 In between these is reinforced learning with model knowing only the score of its output, or semi-supervised learning where only portion of the data is labelled with correct answer.
 
 ## Modeling Workflow
 
-Depending on a person You're talking to You would get different answer about how their modeling workflow, or lifecycle looks like.
+Depending on a person You're talking to You would get different answer about how their modeling workflow, or life-cycle looks like.
 
 Here we will try to define one that is focused mostly on delivering the solution to the customers and is composed of:
 
@@ -74,7 +74,7 @@ Here we will try to define one that is focused mostly on delivering the solution
 6. Define model specific data transformation
 7. Train model
 8. Evaluate model performance
-9. Repeat with other models or hyperparameter settings
+9. Repeat with other models or hyper-parameter settings
 10. Tracking different models performance
 11. Select best models
 12. Explain the results
@@ -235,13 +235,13 @@ ggplot(ames, aes(x = Sale_Price)) +
 Since the dataset is already prepared for the modelling we will focus on creation of the training and holdout sets.
 Anyway, there are many other operations that can be made on the data before learning the model, but most of these is best to be done as part of the resampling of the data during the learning.
 The reasoning behind this is, that it is necessary to handle the data as in real world case and that means, that any of the operations on the data should be done directly on the subsamples used for training the model, otherwise we would affect also the test data, or holdout data by such transformations and vice versa the training data would be affected also by the knowledge contained in the test data or holdout data.
-The caret package stores the values for the transformations done on the training data such as centering, scaling, pca, etc.
+The caret package stores the values for the transformations done on the training data such as centering, scaling, PCA, etc.
 This way the transformation done on the test data and holdout set is the same as on the training data.
 
 Another important aspect to be considered when creating the training and holdout sets is that often the distribution of classes is not symmetrical.
 Therefore it is good to make the subsamples in such a way, that the distribution of classes in the training set and holdout set is approximately the same.
 Luckily, the function ```rsample::initial_split``` have parameter called `strata` which takes name of the column as input and then returned indices are keep the distribution of the classes among the training and testing set, or as in case of Ames dataset where price is numeric it is binned into quartiles.
-This behaviour can be overriden by argument `breaks` which takes single number as input indicating the number of bins for stratification.
+This behaviour can be overridden by argument `breaks` which takes single number as input indicating the number of bins for stratification.
 Another important argument is `prop` which determines the ratio of the training and test part of the dataset.
 
 After data split is assigned to the variable we can extract training and testing part from it by calling functions `training()` and `testing()` respectively.
@@ -697,7 +697,7 @@ xgb_workflow_pred <-
   predict(new_data = ames_test)
 ```
 
-Now we will compare the rmse of the models.
+Now we will compare the RMSE of the models.
 For that we will use `rmse()` function from the [yardstick](https://yardstick.tidymodels.org) package.
 Advantage of this function is, that it works on data frames and it can work with grouped data frame.
 Therefore, we can create on data frame containing columns `model`, `pred` and `truth` with model name, prediction and original data respectively.
@@ -735,7 +735,7 @@ In the next chunk we can examine created objects.
 Last thing we will try in this training is combining multiple workflow definitions into a workflow set.
 Advantage of workflow set is that it can compute multiple different models, perform hyperparameter search on them and then plot a nice result, giving a quick understanding of models performance.
 Unlike previous examples the workflow sets work with resampled datasets.
-For that we will create a new sample from the ames dataset using function `vfold_cv()` from [rsample](https://rsample.tidymodels.org) package.
+For that we will create a new sample from the Ames dataset using function `vfold_cv()` from [rsample](https://rsample.tidymodels.org) package.
 This function create multiple cross validation sets, what is more robust way of working with models and that way we have better understanding of the model sensitivity on data changes.
 Similarly as with `initial_split()` function we can define strata, which should be `Sale_Price`.
 

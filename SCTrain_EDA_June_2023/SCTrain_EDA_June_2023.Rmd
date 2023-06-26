@@ -175,7 +175,7 @@ naniar::riskfactors |>
 ```
 
 There is also a possibility to visualize how many percent of the columns contain NAs for the given observations.
-The `naniar::gg_miss_case` shows this and has also switches to order the cases by the amount of missing obsevations and to choose between absolute counts and percentage.
+The `naniar::gg_miss_case` shows this and has also switches to order the cases by the amount of missing observations and to choose between absolute counts and percentage.
 
 ```{r missing_case, exercise = TRUE}
 naniar::riskfactors |> 
@@ -248,7 +248,7 @@ The box is a range from first to third quantile, the line in the box is median, 
 Finally, the dots are the outliers.
 To have a clear view of this, we will use `starwars` dataset from the [dplyr](https://dplyr.tidyverse.org) package.
 
-First the boxplot
+First the box plot
 
 ```{r boxplot, exercise = TRUE}
 dplyr::starwars |> 
