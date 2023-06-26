@@ -11,18 +11,12 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(naniar)
-library(visdat)
+library(ggplot2)
 library(dplyr)
-library(outliers)
-library(vtree)
-library(ranger)
-library(randomForest)
-library(xgboost)
-library(modeldata)
-library(tidymodels)
 data(airquality)
 knitr::opts_chunk$set(echo = FALSE)
 tutorial_options(exercise.completion = TRUE)
+
 load("data/iris_tidy.Rdata")
 ```
 
@@ -37,6 +31,7 @@ Some of the reasons to consider using R in the new projects are:
 - Easy to learn and use, especially for people with no programming experience.
 - Enormous amount of libraries from multiple fields.
 - Tools for easy integration of C/C++, JavaScript, Python and other languages.
+- Usually, base packages of R introduce few breaking changes.
 - Readable syntax, especially when using [Tidyverse](https://tidyverse.tidyverse.org/).
 - Great environment for complex and reproducible machine learning project with [Tidymodels](https://www.tidymodels.org).
 - [RStudio IDE](https://posit.co/products/open-source/rstudio/).

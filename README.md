@@ -59,30 +59,30 @@ learnr::run_tutorial("Tidymodels_April_2023/tidymodels_april_2023.Rmd")
 
 ### Introduction to R
 
-It is contained in folder `"SCTrain_June_2023"`.
+It is contained in folder `"SCTrain_Introduction_to_R_June_2023"`.
 
 Run the training by executing following code in  [RStudio](https://posit.co/products/open-source/rstudio/):
 
 ```r
-learnr::run_tutorial("SCTrain_June_2023/SCTrain_Introduction_to_R_June_2023.Rmd")
+learnr::run_tutorial("SCTrain_Introduction_to_R_June_2023/SCTrain_Introduction_to_R_June_2023.Rmd")
 ```
 
 ### Exploratory Data Analysis with R
 
-It is contained in folder `"SCTrain_June_2023"`.
+It is contained in folder `"SCTrain_EDA_June_2023"`.
 
 Run the training by executing following code in  [RStudio](https://posit.co/products/open-source/rstudio/):
 
 ```r
-learnr::run_tutorial("SCTrain_June_2023/SCTrain_EDA_June_2023.Rmd")
+learnr::run_tutorial("SCTrain_EDA_June_2023/SCTrain_EDA_June_2023.Rmd")
 ```
 
 ### Modelling with R
 
-It is contained in folder `"SCTrain_June_2023"`.
+It is contained in folder `"SCTrain_Tidymodels_June_2023"`.
 
 Run the training by executing following code in  [RStudio](https://posit.co/products/open-source/rstudio/):
 
 ```r
-learnr::run_tutorial("SCTrain_June_2023/SCTrain_Tidymodels_June_2023.Rmd")
+learnr::run_tutorial("SCTrain_Tidymodels_June_2023/SCTrain_Tidymodels_June_2023.Rmd")
 ```

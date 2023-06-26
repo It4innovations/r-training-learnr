@@ -16,10 +16,10 @@ library(skimr)
 library(dplyr)
 library(outliers)
 library(vtree)
+library(ggplot2)
 data(airquality)
 knitr::opts_chunk$set(echo = FALSE)
 tutorial_options(exercise.completion = TRUE)
-load("data/iris_tidy.Rdata")
 ```
 
 ## Why is the exploratory analysis important
